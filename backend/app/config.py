@@ -1,9 +1,10 @@
+# backend/app/config.py
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-if not GEMINI_API_KEY:
-    raise RuntimeError("GEMINI_API_KEY not set — get one free at https://aistudio.google.com/apikey")
+if not GROQ_API_KEY:
+    raise RuntimeError("GROQ_API_KEY not set — get one free at https://console.groq.com/keys")

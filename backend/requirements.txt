@@ -6,4 +6,4 @@ python-docx
 python-pptx
 python-dotenv
 pydantic
-google-genai
+groq

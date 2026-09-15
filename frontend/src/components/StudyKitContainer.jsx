@@ -4,7 +4,7 @@ import UploadZone from "./UploadZone";
 import NotesView from "./tabs/NotesView";
 import FlashcardsView from "./tabs/FlashcardsView";
 import QuizView from "./tabs/QuizView";
-import { generateStudyKit } from "../api/client";
+import { generateStudyKit } from "./api/client";
 
 const TABS = ["Notes", "Flashcards", "Quiz"];
 
