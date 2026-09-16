@@ -48,11 +48,12 @@ export default function StudyKitContainer() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`
-                    px-4 py-2 rounded-full text-sm font-medium transition-colors
-                    ${isActive
-                      ? "bg-primary text-white"
-                      : "bg-surface text-text-muted border border-border hover:text-text"}
-                  `}
+  px-4 py-2 rounded-full text-sm font-medium transition-colors
+  focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+  ${isActive
+    ? "bg-primary text-white"
+    : "bg-surface text-text-muted border border-border hover:text-text"}
+`}
                 >
                   {tab}
                 </button>

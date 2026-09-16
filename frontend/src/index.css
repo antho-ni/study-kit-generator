@@ -5,7 +5,7 @@
   --color-bg: #F7F8FB;
   --color-surface: #FFFFFF;
   --color-text: #1E293B;
-  --color-text-muted: #64748B;
+  --color-text-muted: #475569;  /* was #64748B — now ~7.5:1 on white, safely AA */
   --color-primary: #4F46E5;
   --color-primary-hover: #4338CA;
   --color-success: #0D9488;
