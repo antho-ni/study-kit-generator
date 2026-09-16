@@ -1,4 +1,3 @@
-# backend/app/models/schemas.py
 from pydantic import BaseModel, Field
 from typing import List, Literal
 
@@ -18,5 +17,5 @@ class Flashcard(BaseModel):
 
 class StudyKit(BaseModel):
     notes: str
-    flashcards: List[Flashcard]
-    quiz: List[QuizQuestion]
+    flashcards: List[Flashcard] = Field(min_length=5, max_length=15)
+    quiz: List[QuizQuestion] = Field(min_length=5, max_length=12)

@@ -2,7 +2,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.extraction import extract_text, ExtractionError
 from app.services.chunking import needs_chunking, chunk_text
-from app.services.ai_generator import generate_study_kit
+from app.services.ai_generator import generate_study_kit, summarize_chunk
 from app.models.schemas import StudyKit
 
 router = APIRouter()
@@ -10,7 +10,6 @@ router = APIRouter()
 MAX_FILE_SIZE = 15 * 1024 * 1024  # 15MB
 
 def _friendly_ai_error(e: Exception) -> str:
-    """Translate raw provider errors into plain language for students."""
     msg = str(e)
     if "503" in msg or "UNAVAILABLE" in msg or "overloaded" in msg.lower():
         return "The AI service is busy right now. Please try again in a minute."
@@ -38,14 +37,16 @@ async def generate(file: UploadFile = File(...)):
     if not text.strip():
         raise HTTPException(422, "This document appears to be empty. Please upload a file with readable text.")
 
-    if needs_chunking(text):
-        chunks = chunk_text(text)
-        condensed = []
-        for chunk in chunks:
-            condensed.append(chunk[:2000])
-        text = "\n\n".join(condensed)
-
     try:
+        if needs_chunking(text):
+            chunks = chunk_text(text)
+            print(f"Document split into {len(chunks)} chunks — summarizing each...")
+            condensed = []
+            for i, chunk in enumerate(chunks, start=1):
+                summary = summarize_chunk(chunk, i, len(chunks))
+                condensed.append(summary)
+            text = "\n\n".join(condensed)
+
         study_kit = generate_study_kit(text)
     except Exception as e:
         raise HTTPException(500, _friendly_ai_error(e))

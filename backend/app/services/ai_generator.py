@@ -71,3 +71,35 @@ Document content:
             raise
 
     raise last_error
+
+def summarize_chunk(chunk: str, chunk_num: int, total_chunks: int) -> str:
+    """Condense one chunk of a long document into a dense summary,
+    preserving key facts/terms rather than dropping content."""
+    prompt = f"""This is part {chunk_num} of {total_chunks} of a larger document.
+Summarize the key facts, concepts, and terms from this section in dense,
+information-preserving prose. Do not add commentary or introduction —
+just the condensed content itself, as if writing study notes.
+
+Section content:
+{chunk}
+"""
+
+    last_error = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            response = client.chat.completions.create(
+                model="openai/gpt-oss-120b",
+                messages=[{"role": "user", "content": prompt}],
+            )
+            return response.choices[0].message.content
+
+        except APIStatusError as e:
+            last_error = e
+            if e.status_code in (503, 429) and attempt < MAX_RETRIES:
+                wait_time = RETRY_DELAY_SECONDS * attempt
+                print(f"Groq overloaded on chunk {chunk_num} (attempt {attempt}/{MAX_RETRIES}), retrying in {wait_time}s...")
+                time.sleep(wait_time)
+                continue
+            raise
+
+    raise last_error
