@@ -1,4 +1,3 @@
-// frontend/src/components/UploadZone.jsx
 import { useState, useCallback } from "react";
 
 const ACCEPTED_TYPES = [".pdf", ".docx", ".pptx", ".txt"];
@@ -29,32 +28,39 @@ export default function UploadZone({ onFileSelected, isLoading }) {
   }, []);
 
   return (
-    <div
-      onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-      onDragLeave={() => setIsDragging(false)}
-      onDrop={handleDrop}
-      className={`
-        border-2 border-dashed rounded-xl p-12 text-center transition-colors
-        ${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300"}
-        ${isLoading ? "opacity-50 pointer-events-none" : ""}
-      `}
-    >
-      <input
-        type="file"
-        id="file-input"
-        className="hidden"
-        accept={ACCEPTED_TYPES.join(",")}
-        onChange={(e) => validateAndSelect(e.target.files[0])}
-      />
-      <label htmlFor="file-input" className="cursor-pointer">
-        <p className="text-lg font-medium text-gray-700">
-          {isLoading ? "Generating your study kit..." : "Drop a document here, or click to browse"}
-        </p>
-        <p className="text-sm text-gray-500 mt-2">
-          Supports PDF, DOCX, PPTX, TXT — max 15MB
-        </p>
-      </label>
-      {error && <p className="text-red-500 text-sm mt-3">{error}</p>}
+    <div className="max-w-3xl mx-auto px-6">
+      <div
+        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={handleDrop}
+        className={`
+          rounded-2xl border-2 border-dashed p-12 text-center transition-all
+          ${isDragging ? "border-primary bg-primary/5" : "border-border bg-surface"}
+          ${isLoading ? "opacity-50 pointer-events-none" : ""}
+        `}
+      >
+        <input
+          type="file"
+          id="file-input"
+          className="hidden"
+          accept={ACCEPTED_TYPES.join(",")}
+          onChange={(e) => validateAndSelect(e.target.files[0])}
+        />
+        <label htmlFor="file-input" className="cursor-pointer">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+            </svg>
+          </div>
+          <p className="text-base font-medium text-text">
+            {isLoading ? "Generating your study kit…" : "Drop a document here, or click to browse"}
+          </p>
+          <p className="text-sm text-text-muted mt-1">
+            PDF, DOCX, PPTX, or TXT — max 15MB
+          </p>
+        </label>
+      </div>
+      {error && <p className="text-danger text-sm mt-3">{error}</p>}
     </div>
   );
 }

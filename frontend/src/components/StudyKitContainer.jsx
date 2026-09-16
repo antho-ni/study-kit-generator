@@ -1,4 +1,3 @@
-// frontend/src/components/StudyKitContainer.jsx
 import { useState } from "react";
 import UploadZone from "./UploadZone";
 import NotesView from "./tabs/NotesView";
@@ -28,34 +27,40 @@ export default function StudyKitContainer() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="pb-16">
       <UploadZone onFileSelected={handleFile} isLoading={isLoading} />
 
       {error && (
-        <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
-          {error}
+        <div className="max-w-3xl mx-auto px-6 mt-4">
+          <div className="bg-danger/5 border border-danger/20 rounded-xl px-4 py-3">
+            <p className="text-danger text-sm">{error}</p>
+          </div>
         </div>
       )}
 
       {studyKit && (
-        <div className="mt-8">
-          <div className="flex gap-2 border-b border-gray-200">
-            {TABS.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 text-sm font-medium ${
-                  activeTab === tab
-                    ? "border-b-2 border-blue-600 text-blue-600"
-                    : "text-gray-500"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
+        <div className="max-w-3xl mx-auto px-6 mt-8">
+          <div className="flex gap-2 mb-4">
+            {TABS.map((tab) => {
+              const isActive = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`
+                    px-4 py-2 rounded-full text-sm font-medium transition-colors
+                    ${isActive
+                      ? "bg-primary text-white"
+                      : "bg-surface text-text-muted border border-border hover:text-text"}
+                  `}
+                >
+                  {tab}
+                </button>
+              );
+            })}
           </div>
 
-          <div className="mt-4">
+          <div className="bg-surface border border-border rounded-2xl p-8 shadow-sm">
             {activeTab === "Notes" && <NotesView notes={studyKit.notes} />}
             {activeTab === "Flashcards" && <FlashcardsView cards={studyKit.flashcards} />}
             {activeTab === "Quiz" && <QuizView questions={studyKit.quiz} />}

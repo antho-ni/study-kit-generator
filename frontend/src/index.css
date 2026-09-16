@@ -1,3 +1,26 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@theme {
+  --color-bg: #F7F8FB;
+  --color-surface: #FFFFFF;
+  --color-text: #1E293B;
+  --color-text-muted: #64748B;
+  --color-primary: #4F46E5;
+  --color-primary-hover: #4338CA;
+  --color-success: #0D9488;
+  --color-danger: #DC2626;
+  --color-border: #E2E8F0;
+
+  --font-sans: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -30,6 +53,18 @@
   }
 }
 
+@theme {
+  --color-paper: #FBF6EA;
+  --color-ink: #23272F;
+  --color-rule: #D6CFC0;
+  --color-pen: #2C4A7C;
+  --color-marker: #F6C945;
+  --color-redpen: #B23A32;
+
+  --font-serif: 'Lora', serif;
+  --font-sans: 'Inter', sans-serif;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
@@ -51,7 +86,9 @@
 }
 
 body {
-  margin: 0;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
 #root {
