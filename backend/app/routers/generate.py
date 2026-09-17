@@ -1,11 +1,14 @@
 # backend/app/routers/generate.py
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Request
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from app.services.extraction import extract_text, ExtractionError
 from app.services.chunking import needs_chunking, chunk_text
 from app.services.ai_generator import generate_study_kit, summarize_chunk
 from app.models.schemas import StudyKit
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 MAX_FILE_SIZE = 15 * 1024 * 1024  # 15MB
 
@@ -20,7 +23,8 @@ def _friendly_ai_error(e: Exception) -> str:
     return "Something went wrong while generating your study kit. Please try again."
 
 @router.post("/api/generate", response_model=StudyKit)
-async def generate(file: UploadFile = File(...)):
+@limiter.limit("5/minute")
+async def generate(request: Request, file: UploadFile = File(...)):
     file_bytes = await file.read()
 
     if len(file_bytes) > MAX_FILE_SIZE:
@@ -32,6 +36,8 @@ async def generate(file: UploadFile = File(...)):
         msg = str(e)
         if "scanned" in msg.lower() or "image-based" in msg.lower():
             raise HTTPException(422, "This PDF appears to be a scanned image rather than text. Try a text-based PDF, or a DOCX/TXT file instead.")
+        if "doesn't match" in msg.lower():
+            raise HTTPException(422, "This file doesn't look like a valid document of that type. Please check the file and try again.")
         raise HTTPException(422, "We couldn't read this file. Please check it's a valid PDF, DOCX, PPTX, or TXT file.")
 
     if not text.strip():
@@ -40,7 +46,6 @@ async def generate(file: UploadFile = File(...)):
     try:
         if needs_chunking(text):
             chunks = chunk_text(text)
-            print(f"Document split into {len(chunks)} chunks — summarizing each...")
             condensed = []
             for i, chunk in enumerate(chunks, start=1):
                 summary = summarize_chunk(chunk, i, len(chunks))

@@ -7,3 +7,5 @@ python-pptx
 python-dotenv
 pydantic
 groq
+slowapi
+python-magic-bin
